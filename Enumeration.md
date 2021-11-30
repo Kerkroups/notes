@@ -12,28 +12,28 @@
 - smbclient -L //[ip] -N    
 - nmap --script smb-enum-shares -p 139,445 [ip]    
 **Null session**:    
-  rpcclient -U "" -N [ip]    
-  - srvinfo
-  - enumdomusers
-  - enumprivs
-  - enumalsgroups domain
-  - lookupnames administrators
-  - querydominfo
-  - enumdomusers
-  - queryuser john
-  - smbclient \\\\[ip]\\[share name]    
+rpcclient -U "" -N [ip]    
+- srvinfo
+- enumdomusers
+- enumprivs
+- enumalsgroups domain
+- lookupnames administrators
+- querydominfo
+- enumdomusers
+- queryuser john
+- smbclient \\\\[ip]\\[share name]    
 **Overall Scan**:    
-      enum4linux -a [ip]    
-      crackmapexec smb [ip/range]
+- enum4linux -a [ip]    
+- crackmapexec smb [ip/range]
 ## Web
 **Common scan**:
-   nikto -h [hostname/ip]
+- nikto -h [hostname/ip]
 **Directory recon**:     
-    gobuster dir -u [http://ip/hostname] -w wordlist.txt    
-    ffuf -w wordlist:FUZZ -u [http://ip/hostname]/FUZZ    
+- gobuster dir -u [http://ip/hostname] -w wordlist.txt    
+- ffuf -w wordlist:FUZZ -u [http://ip/hostname]/FUZZ    
 **Virtual host recon**:     
-    gobuster vhost -u [http://ip/hostname] -w wordlist.txt    
-    ffuf -w wordlist:FUZZ -u [http://ip/] -H "FUZZ.hostname.com" -fs/fc    
+- gobuster vhost -u [http://ip/hostname] -w wordlist.txt    
+- ffuf -w wordlist:FUZZ -u [http://ip/] -H "FUZZ.hostname.com" -fs/fc    
 **CMS tools**:    
     wpscan    
     droopescan    
