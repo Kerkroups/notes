@@ -26,6 +26,5 @@
     - gobuster vhost -u [http://ip/hostname] -w wordlist.txt    
     - ffuf -w wordlist:FUZZ -u [http://ip/] -H "FUZZ.hostname.com" -fs/fc    
   - **CMS tools**:    
-    - wpscan    
-    - droopescan    
-  
+      - wpscan    
+      - droopescan    
