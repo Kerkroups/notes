@@ -5,14 +5,14 @@
 4) **NMAP SMB enumeration example**: nmap --script smb-os-discovery.nse -p445 <target>    
                                      nmap -sU -sS --script smb-enum-shares.nse -p U:137,T:139 <host>    
 ## SMB
-1) **Enumerate hostname**: nmblookup -A [ip]    
-2) **List shares**:    
+**Enumerate hostname**: nmblookup -A [ip]    
+**List shares**:    
       smbmap -H [ip/hostname]    
       smbmap -H [ip] -d [domain] -u [user] -p [password]    
       smbclient -L //[ip] -N    
       nmap --script smb-enum-shares -p 139,445 [ip]    
-3) **Null session**:    
-     rpcclient -U "" -N [ip]    
+**Null session**:    
+  rpcclient -U "" -N [ip]    
       - srvinfo
       - enumdomusers
       - enumprivs
@@ -22,18 +22,18 @@
       - enumdomusers
       - queryuser john
       smbclient \\\\[ip]\\[share name]    
-4) **Overall Scan**:    
+**Overall Scan**:    
       enum4linux -a [ip]    
       crackmapexec smb [ip/range]
 ## Web
-1) **Common scan**:
+**Common scan**:
    nikto -h [hostname/ip]
-2) **Directory recon**:     
+**Directory recon**:     
     gobuster dir -u [http://ip/hostname] -w wordlist.txt    
     ffuf -w wordlist:FUZZ -u [http://ip/hostname]/FUZZ    
-3) **Virtual host recon**:     
+**Virtual host recon**:     
     gobuster vhost -u [http://ip/hostname] -w wordlist.txt    
     ffuf -w wordlist:FUZZ -u [http://ip/] -H "FUZZ.hostname.com" -fs/fc    
-4) **CMS tools**:    
+**CMS tools**:    
     wpscan    
     droopescan    
