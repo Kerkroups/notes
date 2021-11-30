@@ -28,6 +28,8 @@ smbclient \\\\[ip]\\[share name]
 Overall Scan:    
     enum4linux -a [ip]    
     crackmapexec smb [ip/range]
+    Enumerate nfs shares ==> showmount -e [IP]
+    Mount nfs share ==> mount -t [cifs/nfs] [IP]:/sharename [/mnt/localdir] options
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Web
 Common scan:
