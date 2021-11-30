@@ -15,14 +15,13 @@ List shares:
 
 Null session:    
 rpcclient -U "" -N [ip]    
-    srvinfo
-    enumdomusers
-    enumprivs
-    enumalsgroups domain
-    lookupnames administrators
-    querydominfo
-    enumdomusers
-    queryuser john
+    Server information ==> srvinfo
+    Enumerate domain users ==> enumdomusers
+    Enumerate privileges ==> enumprivs
+    Enumerate local groups ==> enumalsgroups domain
+    User information ==> lookupnames administrators
+    Domain information ==> querydominfo
+    User information ==> queryuser <username>
 
 smbclient \\\\[ip]\\[share name]    
 
