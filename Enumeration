@@ -12,6 +12,7 @@ List shares:
 - smbmap -H [ip] -d [domain] -u [user] -p [password]    
 - smbclient -L //[ip] -N    
 - nmap --script smb-enum-shares -p 139,445 [ip]
+- nbtscan -r > $ip/24
 
 Null session:    
 rpcclient -U "" -N [ip]    
@@ -30,6 +31,7 @@ Overall Scan:
     crackmapexec smb [ip/range]
     Enumerate nfs shares ==> showmount -e [IP]
     Mount nfs share ==> mount -t [cifs/nfs] [IP]:/sharename [/mnt/localdir] options
+                    ==> mount -t cifs //<server ip>/<share> <local dir> -o username=”guest”,password=””
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Web
 Common scan:
@@ -45,5 +47,6 @@ Virtual host recon:
 CMS tools:    
     wpscan --url http://[hostname/ip] --enumerate [a,vp,vt,u]    
     droopescan
-
-
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
+LDAP
+ldapsearch -x -b "dc=megabank,dc=local" "*" -h > $ip
