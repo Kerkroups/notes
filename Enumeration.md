@@ -11,4 +11,11 @@
       smbmap -H [ip] -d [domain] -u [user] -p [password]    
       smbclient -L //[ip] -N    
       nmap --script smb-enum-shares -p 139,445 [ip]    
-3) **Null session**: rpcclient -U "" -N [ip]
+3) **Null session**:    
+      rpcclient -U "" -N [ip]    
+      smbclient \\\\[ip]\\[share name]    
+4) **Overall Scan**:    
+      enum4linux -a [ip]    
+## Web
+1) **Common scan**:
+  - nikto -h [hostname/ip]
