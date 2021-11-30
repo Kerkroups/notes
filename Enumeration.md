@@ -7,21 +7,21 @@
 ## SMB
 **Enumerate hostname**: nmblookup -A [ip]    
 **List shares**:    
-      smbmap -H [ip/hostname]    
-      smbmap -H [ip] -d [domain] -u [user] -p [password]    
-      smbclient -L //[ip] -N    
-      nmap --script smb-enum-shares -p 139,445 [ip]    
+- smbmap -H [ip/hostname]    
+- smbmap -H [ip] -d [domain] -u [user] -p [password]    
+- smbclient -L //[ip] -N    
+- nmap --script smb-enum-shares -p 139,445 [ip]    
 **Null session**:    
   rpcclient -U "" -N [ip]    
-      - srvinfo
-      - enumdomusers
-      - enumprivs
-      - enumalsgroups domain
-      - lookupnames administrators
-      - querydominfo
-      - enumdomusers
-      - queryuser john
-      smbclient \\\\[ip]\\[share name]    
+  - srvinfo
+  - enumdomusers
+  - enumprivs
+  - enumalsgroups domain
+  - lookupnames administrators
+  - querydominfo
+  - enumdomusers
+  - queryuser john
+  - smbclient \\\\[ip]\\[share name]    
 **Overall Scan**:    
       enum4linux -a [ip]    
       crackmapexec smb [ip/range]
