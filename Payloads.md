@@ -1,6 +1,6 @@
 ## Linux LFI
-$ /etc/issue
-$ /proc/version
+- /etc/issue
+- /proc/version
 $ /etc/profile
 $ /etc/passwd
 $ /etc/shadow
