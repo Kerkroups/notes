@@ -15,7 +15,8 @@
       rpcclient -U "" -N [ip]    
       smbclient \\\\[ip]\\[share name]    
 4) **Overall Scan**:    
-      enum4linux -a [ip]    
+      enum4linux -a [ip]
+      crackmapexec smb [ip/range]
 ## Web
 1) **Common scan**:
    nikto -h [hostname/ip]
