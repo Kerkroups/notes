@@ -13,6 +13,14 @@
       nmap --script smb-enum-shares -p 139,445 [ip]    
 3) **Null session**:    
       rpcclient -U "" -N [ip]    
+      - srvinfo
+      - enumdomusers
+      - enumprivs
+      - enumalsgroups domain
+      - lookupnames administrators
+      - querydominfo
+      - enumdomusers
+      - queryuser john
       smbclient \\\\[ip]\\[share name]    
 4) **Overall Scan**:    
       enum4linux -a [ip]    
