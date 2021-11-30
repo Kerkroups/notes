@@ -17,14 +17,14 @@
 4) **Overall Scan**:    
       enum4linux -a [ip]    
 ## Web
-1) - **Common scan**:
+1) **Common scan**:
    nikto -h [hostname/ip]
-   - **Directory recon**:     
+2) **Directory recon**:     
     gobuster dir -u [http://ip/hostname] -w wordlist.txt    
     ffuf -w wordlist:FUZZ -u [http://ip/hostname]/FUZZ    
-   - **Virtual host recon**:     
+3) **Virtual host recon**:     
     gobuster vhost -u [http://ip/hostname] -w wordlist.txt    
     ffuf -w wordlist:FUZZ -u [http://ip/] -H "FUZZ.hostname.com" -fs/fc    
-   - **CMS tools**:    
+4) **CMS tools**:    
     wpscan    
     droopescan    
