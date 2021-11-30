@@ -12,7 +12,7 @@
       smbclient -L //[ip] -N    
       nmap --script smb-enum-shares -p 139,445 [ip]    
 3) **Null session**:    
-      rpcclient -U "" -N [ip]    
+     rpcclient -U "" -N [ip]    
       - srvinfo
       - enumdomusers
       - enumprivs
