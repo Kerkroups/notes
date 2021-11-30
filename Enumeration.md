@@ -18,13 +18,13 @@
       enum4linux -a [ip]    
 ## Web
 1) - **Common scan**:
-    - nikto -h [hostname/ip]
-  - **Directory recon**:     
-    - gobuster dir -u [http://ip/hostname] -w wordlist.txt    
-    - ffuf -w wordlist:FUZZ -u [http://ip/hostname]/FUZZ    
-  - **Virtual host recon**:     
-    - gobuster vhost -u [http://ip/hostname] -w wordlist.txt    
-    - ffuf -w wordlist:FUZZ -u [http://ip/] -H "FUZZ.hostname.com" -fs/fc    
-  - **CMS tools**:    
-      - wpscan    
-      - droopescan    
+   nikto -h [hostname/ip]
+   - **Directory recon**:     
+    gobuster dir -u [http://ip/hostname] -w wordlist.txt    
+    ffuf -w wordlist:FUZZ -u [http://ip/hostname]/FUZZ    
+   - **Virtual host recon**:     
+    gobuster vhost -u [http://ip/hostname] -w wordlist.txt    
+    ffuf -w wordlist:FUZZ -u [http://ip/] -H "FUZZ.hostname.com" -fs/fc    
+   - **CMS tools**:    
+    wpscan    
+    droopescan    
