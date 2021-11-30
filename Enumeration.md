@@ -6,9 +6,9 @@
                                      nmap -sU -sS --script smb-enum-shares.nse -p U:137,T:139 <host>    
 ## SMB
 1) **Enumerate hostname**: nmblookup -A [ip]    
-2) **List shares**:
-      -smbmap -H [ip/hostname]    
-      -smbmap -H [ip] -d [domain] -u [user] -p [password]    
-      -smbclient -L //[ip] -N    
-      -nmap --script smb-enum-shares -p 139,445 [ip]    
+2) **List shares**:    
+      smbmap -H [ip/hostname]    
+      smbmap -H [ip] -d [domain] -u [user] -p [password]    
+      smbclient -L //[ip] -N    
+      nmap --script smb-enum-shares -p 139,445 [ip]    
 3) **Null session**: rpcclient -U "" -N [ip]
