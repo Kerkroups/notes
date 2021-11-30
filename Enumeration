@@ -1,39 +1,48 @@
-## NMAP
-1) **Full TCP port, service version detect, default script scan**: nmap -Pn -p- -sV -sC <IP> -oA <path/filename>    
-2) **Full UDP port, service version detect, default script scan**: nmap -Pn -sU -p- -sV -sC <IP> -oA <path/filename>    
-3) **NMAP scripts for SMB enumeration**: cd /usr/share/nmap/scripts; ls |  grep smb    
-4) **NMAP SMB enumeration example**: nmap --script smb-os-discovery.nse -p445 <target>    
-                                     nmap -sU -sS --script smb-enum-shares.nse -p U:137,T:139 <host>    
-## SMB
-**Enumerate hostname**: nmblookup -A [ip]    
-**List shares**:    
+NMAP
+Full TCP port, service version detect, default script scan: nmap -Pn -p- -sV -sC <IP> -oA <path/filename>    
+Full UDP port, service version detect, default script scan: nmap -Pn -sU -p- -sV -sC <IP> -oA <path/filename>    
+NMAP scripts for SMB enumeration: cd /usr/share/nmap/scripts; ls |  grep smb    
+NMAP SMB enumeration example**: nmap --script smb-os-discovery.nse -p445 <target>    
+                                nmap -sU -sS --script smb-enum-shares.nse -p U:137,T:139 <host>    
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SMB
+Enumerate hostname: nmblookup -A [ip]    
+List shares:    
 - smbmap -H [ip/hostname]    
 - smbmap -H [ip] -d [domain] -u [user] -p [password]    
 - smbclient -L //[ip] -N    
-- nmap --script smb-enum-shares -p 139,445 [ip]    
-**Null session**:    
+- nmap --script smb-enum-shares -p 139,445 [ip]
+
+Null session:    
 rpcclient -U "" -N [ip]    
-- srvinfo
-- enumdomusers
-- enumprivs
-- enumalsgroups domain
-- lookupnames administrators
-- querydominfo
-- enumdomusers
-- queryuser john
-- smbclient \\\\[ip]\\[share name]    
-**Overall Scan**:    
-- enum4linux -a [ip]    
-- crackmapexec smb [ip/range]
-## Web
-**Common scan**:
-- nikto -h [hostname/ip]
-**Directory recon**:     
-- gobuster dir -u [http://ip/hostname] -w wordlist.txt    
-- ffuf -w wordlist:FUZZ -u [http://ip/hostname]/FUZZ    
-**Virtual host recon**:     
-- gobuster vhost -u [http://ip/hostname] -w wordlist.txt    
-- ffuf -w wordlist:FUZZ -u [http://ip/] -H "FUZZ.hostname.com" -fs/fc    
-**CMS tools**:    
-    wpscan    
-    droopescan    
+    srvinfo
+    enumdomusers
+    enumprivs
+    enumalsgroups domain
+    lookupnames administrators
+    querydominfo
+    enumdomusers
+    queryuser john
+
+smbclient \\\\[ip]\\[share name]    
+
+Overall Scan:    
+    enum4linux -a [ip]    
+    crackmapexec smb [ip/range]
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Web
+Common scan:
+    nikto -h [hostname/ip]
+
+Directory recon:     
+    gobuster dir -u [http://ip/hostname] -w wordlist.txt    
+    ffuf -w wordlist:FUZZ -u [http://ip/hostname]/FUZZ    
+
+Virtual host recon:     
+    gobuster vhost -u [http://ip/hostname] -w wordlist.txt    
+    ffuf -w wordlist:FUZZ -u [http://ip/] -H "FUZZ.hostname.com" -fs/fc    
+CMS tools:    
+    wpscan --url http://[hostname/ip] --enumerate [a,vp,vt,u]    
+    droopescan
+
+
