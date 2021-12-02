@@ -47,6 +47,7 @@ Virtual host recon:
 CMS tools:    
     wpscan --url http://[hostname/ip] --enumerate [a,vp,vt,u]    
     droopescan
+    joomscan -u http://[hostname/ip]
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
 LDAP
 ldapsearch -x -b "dc=megabank,dc=local" "*" -h > $ip
