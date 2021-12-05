@@ -7,4 +7,5 @@ xfreerdp /u:user /p:password321 /cert:ignore /v:MACHINE_IP
 ## Zero Logon    
 **Testing script https://github.com/SecuraBV/CVE-2020-1472    
 **PoC https://github.com/dirkjanm/CVE-2020-1472    
-
+## Windows user enumeration with Kerbrute    
+**/kerbrute_linux_amd64 userenum --dc [IP] -d [domain name] usernames.txt    
