@@ -4,7 +4,7 @@
 **Run responder/ NTLMv2 hash grabbing**: responder -I [interface] -wF -v
 ## CONNECT TO RDP
 xfreerdp /u:user /p:password321 /cert:ignore /v:MACHINE_IP
-##Zero Logon
+##Zero Logon    
 **Testing script https://github.com/SecuraBV/CVE-2020-1472    
 **PoC https://github.com/dirkjanm/CVE-2020-1472    
 
