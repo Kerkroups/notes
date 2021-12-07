@@ -9,3 +9,5 @@ xfreerdp /u:user /p:password321 /cert:ignore /v:MACHINE_IP
 **PoC https://github.com/dirkjanm/CVE-2020-1472    
 ## Windows user enumeration with Kerbrute    
 **/kerbrute_linux_amd64 userenum --dc [IP] -d [domain name] usernames.txt    
+## CVE-2019-6714 BlogEngine.NET    
+**https://blog.gdssecurity.com/labs/2019/3/28/remote-code-execution-in-blogenginenet.html**    
