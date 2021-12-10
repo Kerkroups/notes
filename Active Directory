@@ -75,7 +75,8 @@ https://www.mindpointgroup.com/blog/how-to-hack-through-a-pass-back-attack
 2) SecuraBV ZeroLogon Checker - https://github.com/SecuraBV/CVE-2020-1472
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## KERBEROASTING (Credentials)
-1) GetUserSPNs.py domain.local/user:password -dc-ip [DC IP] -request
+1) GetUserSPNs.py domain.local/user:password - RECON SPNs
+2) GetUserSPNs.py domain.local/user:password -dc-ip [DC IP] -request
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## GPP Attack (Compromised user, member of AD) https://www.rapid7.com/blog/post/2016/07/27/pentesting-in-the-real-world-group-policy-pwnage/
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
