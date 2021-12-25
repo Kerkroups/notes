@@ -112,5 +112,8 @@ Get users NTLMv2 hash.
 For attack need to know username and flag 'do not require preauth'
 
 1) GetNPUsers.py -userfile [file] -outputfile [output filename] -dc-ip [DC IP] domain/
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## CRACKMAPEXEC
 
+1) SMB SHARE PASSWORD SPRAYING: crackmapexec smb [IP] -u username -p password --no-bruteforce
 
