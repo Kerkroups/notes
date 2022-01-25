@@ -26,4 +26,5 @@ load_incognito //load module.
 list_tokens -u //list tokens for users.    
 impersonate_token domain\\username //exploit.    
 
-
+## Kerberoasting    
+GetUserSPNs.py    
