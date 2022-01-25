@@ -12,11 +12,15 @@ xfreerdp /u:user /p:password321 /cert:ignore /v:MACHINE_IP
 ## CVE-2019-6714 BlogEngine.NET    
 **https://blog.gdssecurity.com/labs/2019/3/28/remote-code-execution-in-blogenginenet.html**    
 ## Pass the HASH
-**Grab local hashes**: secretdumps.py    
+**Grab local hashes**: secretdump.py    
 psexec.py    
 crackmapexec    
 wmiexec        
 evil-winrm    
+## Token Impersonation    
+**Delegate**: creating for logging into a machine or RDP.    
+**Impersonate**: "non-interactive", such as attachind network drive or a domain logon script.    
+
 
 
 
