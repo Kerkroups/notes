@@ -16,3 +16,7 @@ psexec.py
 crackmapexec    
 wmiexec    
 secretdumps.py    
+evil-winrm    
+
+
+
