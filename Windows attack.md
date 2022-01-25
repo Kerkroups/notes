@@ -12,10 +12,10 @@ xfreerdp /u:user /p:password321 /cert:ignore /v:MACHINE_IP
 ## CVE-2019-6714 BlogEngine.NET    
 **https://blog.gdssecurity.com/labs/2019/3/28/remote-code-execution-in-blogenginenet.html**    
 ## Pass the HASH
+**Grab local hashes**: secretdumps.py    
 psexec.py    
 crackmapexec    
-wmiexec    
-secretdumps.py    
+wmiexec        
 evil-winrm    
 
 
