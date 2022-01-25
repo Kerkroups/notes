@@ -28,3 +28,6 @@ impersonate_token domain\\username //exploit.
 
 ## Kerberoasting    
 GetUserSPNs.py    
+
+## GPP    
+https://blog.rapid7.com/2016/07/27/pentesting-in-the-real-world-group-policy-pwnage/    
