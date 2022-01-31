@@ -1,0 +1,6 @@
+СОЗДАНИЕ ВИРТУАЛЬНОГО ОКРУЖЕНИЯ PYTHON: 
+  virtualenv --python=python[version][VIRTUAL ENV NAME]
+  source /path/virtual_env/activate
+
+ПАКЕТ IMPACKET: https://github.com/SecureAuthCorp/impacket.git
+
