@@ -33,4 +33,4 @@ GetUserSPNs.py
 https://blog.rapid7.com/2016/07/27/pentesting-in-the-real-world-group-policy-pwnage/    
 
 ## Enumerate another usernames/SIDs  
-python3 /home/yhv/impacket/examples/lookupsid.py SupportDesk/hazard:stealth1agent@10.129.118.4
+python3 lookupsid.py domain/username:password@IP
