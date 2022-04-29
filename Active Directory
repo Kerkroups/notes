@@ -9,6 +9,10 @@ SPN (Service Principal Name) - имя учетной записи служб з�
 
 ## СБОР ДАННЫХ
 
+## PORT SCAN:
+PowerShell: 1..1024 | % {echo ((new-object Net.Sockets.TcpClient).Connect("10.10.10.10",$_)) "Port $_ is open!"} 2>$null
+PowerShell (host range, specific port): 1..20 | % {$a=$_; write-host "--------"; write-host "10.10.10.$a"; 53,80,445,3389 | % {echo ((new-object Net.Sockets.TcpClient).Connect("10.10.10.$a",$_)) "Port $_ is open!"} 2>$null}
+
 ОБЩИЕ РЕСУРСЫ:
 1) net share -> список общих ресурсов на локальном хосте
 2) net view -> список сетевых компьютеров
