@@ -66,6 +66,7 @@ Active Directory Enumeration with PowerView:
 11) get-objectacl, get-objectacl -SamAccountName "<CN>" -ResolveGUIDs
 12) net group <groupname> /domain
 13) get-netdomain, Get-DomainPolicy, get-domainsid
+14) get-domainsid
 
 
 
