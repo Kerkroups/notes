@@ -17,7 +17,7 @@ PowerShell (host range, specific port): 1..20 | % {$a=$_; write-host "--------";
 1) net share -> список общих ресурсов на локальном хосте
 2) net view -> список сетевых компьютеров
 3) net view COMPUTER_NAME /all -> список шар на удаленном компьютере
-4) net user <username> /all (/domain)
+4) net user <username> /all (/domain) -> выводит список имен пользователей AD.
 5) net localgroup <groupname> /domain 
 
 ЕСЛИ КОМАНДЫ net БЛОКИРУЕТ FIREWALL ПРИМЕНЯЕМ WMIC:
@@ -252,6 +252,9 @@ Import powerview;
 Persistence
 
 Add new user: net user <username> <password> /add /domain; net group "<Group name>" <username> /add /domain
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## REMOTE CODE EXECUTION TOOLS:
+psexec (Sysinternals);
 
 
 
