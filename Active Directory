@@ -30,7 +30,7 @@ ldapsearch -h 172.31.1.4 -x -s base namingcontexts
 
 PowerUpSQL - инструмент для обнаружения, перечисления и атак MSSQL серверов.
 
-NAS (Network Attached Storege) - сервер для ъранения данных на файловом сервере.
+NAS (Network Attached Storage) - сервер для хранения данных на файловом сервере.
 Default credentials:
 admin:admin
 admin:password
@@ -57,7 +57,9 @@ admin:no pass
 
 Пользовательские файлы -> скрипт WMImplant
 
-Учетные записи администраторов домена -> get-adgroup -filter{GroupCategory -eq 'Security' -AND Name -like "admin"}
+Учетные записи администраторов домена:
+get-adgroup -filter{GroupCategory -eq 'Security' -AND Name -like "admin"}
+get-aduser -filter {AdminCount -eq 1} -Properties
 
 Поиск групп Active Directory
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
